@@ -61,9 +61,22 @@ storage:
   cache_size_mb: 64
 smt:
   solver_timeout_ms: 250
-engine:
-  max_documents: 100
-  min_relevance_score: 0.5
+  max_opt_gap: 0.05
+  max_candidates: 200
+  max_pairs_per_doc: 5
+  integer_scaling: 10000
+  objective_style: "weighted-sum"
+weights:
+  relevance: 0.30
+  recency: 0.20
+  entanglement: 0.15
+  prior: 0.15
+  authority: 0.10
+  specificity: 0.05
+  uncertainty: 0.05
+tokenizer:
+  model_id: "gpt-4"
+  max_tokens_default: 4000
 EOF
 
 # Start ContextLite in background
