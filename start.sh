@@ -49,17 +49,21 @@ fi
 # Create ContextLite config
 echo "⚙️ Creating ContextLite config..."
 cat > /tmp/contextlite-config.yaml << EOF
-http:
-  host: "0.0.0.0"
+server:
   port: 8080
+  host: "0.0.0.0"
+  cors_enabled: true
+  auth_token: ""
+  rate_limiting:
+    enabled: false
 storage:
-  type: "sqlite"
-  sqlite:
-    path: "/data/so_demo.sqlite"
+  database_path: "/data/so_demo.sqlite"
+  cache_size_mb: 64
+smt:
+  solver_timeout_ms: 250
 engine:
-  max_candidates: 100
-  concurrent_workers: 4
-  cache_enabled: true
+  max_documents: 100
+  min_relevance_score: 0.5
 EOF
 
 # Start ContextLite in background

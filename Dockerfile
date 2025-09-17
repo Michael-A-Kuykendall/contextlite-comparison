@@ -2,7 +2,7 @@
 FROM debian:stable-slim
 WORKDIR /app
 
-# Install runtime dependencies
+# Install runtime dependencies and Caddy
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     sqlite3 \
@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     python3 \
+    gpg \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list \
+    && apt-get update && apt-get install -y caddy \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy ContextLite binary
@@ -25,8 +29,7 @@ RUN npm install
 WORKDIR /app
 COPY Caddyfile /app/Caddyfile
 
-# Install Caddy
-RUN curl -fsSL https://getcaddy.com/go/install.sh | sh
+# Caddy already installed above
 
 # Copy startup script
 COPY start.sh /app/start.sh
