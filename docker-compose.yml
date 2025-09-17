@@ -1,0 +1,37 @@
+
+version: "3.9"
+
+services:
+  contextlite:
+    build: ./contextlite
+    container_name: contextlite
+    environment:
+      - CLITE_DB=/data/so_demo.sqlite
+      - CLITE_HTTP=0.0.0.0:8080
+    volumes:
+      - ./data:/data
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    container_name: sxs_api
+    env_file:
+      - ./api/.env
+    depends_on:
+      - contextlite
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: sxs_caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+      - contextlite
+    restart: unless-stopped
