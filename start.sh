@@ -46,9 +46,25 @@ print('✅ Sample database created')
 "
 fi
 
+# Create ContextLite config
+echo "⚙️ Creating ContextLite config..."
+cat > /tmp/contextlite-config.yaml << EOF
+http:
+  host: "0.0.0.0"
+  port: 8080
+storage:
+  type: "sqlite"
+  sqlite:
+    path: "/data/so_demo.sqlite"
+engine:
+  max_candidates: 100
+  concurrent_workers: 4
+  cache_enabled: true
+EOF
+
 # Start ContextLite in background
 echo "🗄️ Starting ContextLite..."
-/app/contextlite --db /data/so_demo.sqlite --listen 0.0.0.0:8080 &
+/app/contextlite --config /tmp/contextlite-config.yaml &
 CONTEXTLITE_PID=$!
 
 # Wait for ContextLite to be ready
