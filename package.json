@@ -1,0 +1,18 @@
+{
+  "name": "contextlite-demo",
+  "version": "1.0.0",
+  "description": "ContextLite vs Pinecone Empirical Comparison Demo",
+  "main": "comparison-demo.js",
+  "scripts": {
+    "start": "node comparison-demo.js",
+    "dev": "node comparison-demo.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
+    "sqlite3": "^5.1.7"
+  }
+}

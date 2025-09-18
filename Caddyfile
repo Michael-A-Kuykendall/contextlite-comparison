@@ -3,14 +3,14 @@
   encode zstd gzip
   @api path /api/*
   handle @api {
-    reverse_proxy api:3000
+    reverse_proxy localhost:3000
   }
   @ctx path /ctx/*
   handle @ctx {
     uri strip_prefix /ctx
-    reverse_proxy contextlite:8080
+    reverse_proxy localhost:8080
   }
   handle {
-    respond "OK. Try /api/health or POST /api/search" 200
+    reverse_proxy localhost:3001
   }
 }

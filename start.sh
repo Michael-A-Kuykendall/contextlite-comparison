@@ -97,9 +97,18 @@ API_PID=$!
 echo "⏳ Waiting for API..."
 sleep 2
 
+# Start Frontend Demo in background
+echo "🎨 Starting Frontend Demo..."
+cd /app && node comparison-demo.js &
+FRONTEND_PID=$!
+
+# Wait for Frontend to be ready
+echo "⏳ Waiting for Frontend..."
+sleep 2
+
 # Start Caddy (foreground)
 echo "🌐 Starting Caddy proxy..."
 caddy run --config /app/Caddyfile
 
 # Cleanup on exit
-trap "kill $CONTEXTLITE_PID $API_PID" EXIT
+trap "kill $CONTEXTLITE_PID $API_PID $FRONTEND_PID" EXIT

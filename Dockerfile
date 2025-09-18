@@ -31,9 +31,14 @@ COPY Caddyfile /app/Caddyfile
 
 # Caddy already installed above
 
+# Copy frontend demo
+COPY comparison-demo.js /app/comparison-demo.js
+COPY package.json /app/package.json
+RUN npm install
+
 # Copy startup script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-EXPOSE 80 8080 3000
+EXPOSE 80 8080 3000 3001
 CMD ["/app/start.sh"]
