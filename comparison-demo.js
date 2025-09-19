@@ -66,7 +66,7 @@ async function queryPinecone(query) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': process.env.PINECONE_API_KEY || 'pcsk_6emnSp_Cj8GXBMBXTbM3qudCLezVrWPmqWjb2Agd79FAgWocGZsq63vPvMXYomfr3tDEf5'
+                'api-key': process.env.PINECONE_API_KEY || 'pcsk_6emnSp_Cj8GXBMBXTbM3qudCLezVrWPmqWjb2Agd79FAgWocGZsq63vPvMXYomfr3tDEf5'
             },
             body: JSON.stringify({
                 model: 'multilingual-e5-large',
