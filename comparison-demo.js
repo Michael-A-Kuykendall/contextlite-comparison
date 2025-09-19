@@ -862,15 +862,15 @@ app.get('/', (req, res) => {
                             </div>
                             <div class="metrics">
                                 <strong>\${data.contextlite.ms}ms</strong> • \${data.contextlite.total} results
-                                \${data.contextlite.error ? \`<br><span style="color: #e74c3c;">Error: \${data.contextlite.error}</span>\` : ''}
+                                \${data.contextlite.error ? '<br><span style="color: #e74c3c;">Error: ' + data.contextlite.error + '</span>' : ''}
                             </div>
                             <div class="results-container">
-                                \${data.contextlite.hits.slice(0, Math.min(data.contextlite.total, 10)).map(hit => \`
-                                    <div class="document">
-                                        <div class="doc-content">\${hit.content ? highlightSearchTerms(hit.content.substring(0, 120), query) + '...' : 'No content'}</div>
-                                        <div class="doc-path">\${hit.path || hit.id}</div>
-                                    </div>
-                                \`).join('')}
+                                \${data.contextlite.hits.slice(0, Math.min(data.contextlite.total, 10)).map(function(hit) { 
+                                    return '<div class="document">' +
+                                        '<div class="doc-content">' + (hit.content ? highlightSearchTerms(hit.content.substring(0, 120), query) + '...' : 'No content') + '</div>' +
+                                        '<div class="doc-path">' + (hit.path || hit.id) + '</div>' +
+                                    '</div>';
+                                }).join('')}
                             </div>
                         </div>
                         
@@ -885,15 +885,15 @@ app.get('/', (req, res) => {
                             </div>
                             <div class="metrics">
                                 <strong>\${data.pinecone.ms}ms</strong> • \${data.pinecone.total} results
-                                \${data.pinecone.error ? \`<br><span style="color: #e74c3c;">Error: \${data.pinecone.error}</span>\` : ''}
+                                \${data.pinecone.error ? '<br><span style="color: #e74c3c;">Error: ' + data.pinecone.error + '</span>' : ''}
                             </div>
                             <div class="results-container">
-                                \${data.pinecone.hits.map(hit => \`
-                                    <div class="document">
-                                        <div class="doc-content">\${hit.content ? highlightSearchTerms(hit.content.substring(0, 120), query) + '...' : 'No content'}</div>
-                                        <div class="doc-path">\${hit.path || 'N/A'} • Score: \${hit.score ? hit.score.toFixed(3) : 'N/A'}</div>
-                                    </div>
-                                \`).join('')}
+                                \${data.pinecone.hits.map(function(hit) { 
+                                    return '<div class="document">' +
+                                        '<div class="doc-content">' + (hit.content ? highlightSearchTerms(hit.content.substring(0, 120), query) + '...' : 'No content') + '</div>' +
+                                        '<div class="doc-path">' + (hit.path || 'N/A') + ' • Score: ' + (hit.score ? hit.score.toFixed(3) : 'N/A') + '</div>' +
+                                    '</div>';
+                                }).join('')}
                             </div>
                         </div>
                     </div>
@@ -904,15 +904,15 @@ app.get('/', (req, res) => {
                             <div class="tech-detail">
                                 <h5>ContextLite Process</h5>
                                 <p><strong>1.</strong> Received query: "\${query}"</p>
-                                <p><strong>2.</strong> SQLite FTS5 tokenized: [\${query.split(' ').map(term => \`"\${term}"\`).join(', ')}]</p>
+                                <p><strong>2.</strong> SQLite FTS5 tokenized: [\${query.split(' ').map(function(term) { return '"' + term + '"'; }).join(', ')}]</p>
                                 <p><strong>3.</strong> BM25 relevance scoring on 5000 documents</p>
-                                <p><strong>4.</strong> Returned: \${data.contextlite.hits.map(hit => hit.content.split('\\n')[0]).slice(0,3).join(', ')}...</p>
-                                <p><strong>5.</strong> Analysis: \${(() => {
+                                <p><strong>4.</strong> Returned: \${data.contextlite.hits.map(function(hit) { return hit.content.split('\\n')[0]; }).slice(0,3).join(', ')}...</p>
+                                <p><strong>5.</strong> Analysis: \${(function() {
                                     const queryLower = query.toLowerCase();
-                                    const exactMatches = data.contextlite.hits.filter(hit => 
-                                        hit.content.toLowerCase().includes(queryLower)
-                                    ).length;
-                                    return \`✅ \${exactMatches}/\${data.contextlite.hits.length} results contain "\${query}" - exact text matching!\`;
+                                    const exactMatches = data.contextlite.hits.filter(function(hit) {
+                                        return hit.content.toLowerCase().includes(queryLower);
+                                    }).length;
+                                    return '✅ ' + exactMatches + '/' + data.contextlite.hits.length + ' results contain "' + query + '" - exact text matching!';
                                 })()}</p>
                             </div>
                             <div class="tech-detail pinecone">
@@ -920,16 +920,16 @@ app.get('/', (req, res) => {
                                 <p><strong>1.</strong> Received query: "\${query}"</p>
                                 <p><strong>2.</strong> Multilingual-e5-large: 1024-dimension vector [0.123, -0.456, ...]</p>
                                 <p><strong>3.</strong> Cosine similarity search in vector space</p>
-                                <p><strong>4.</strong> Returned: \${data.pinecone.hits.map(hit => hit.content.split('\\n')[0]).slice(0,3).join(', ')}...</p>
-                                <p><strong>5.</strong> Analysis: \${(() => {
+                                <p><strong>4.</strong> Returned: \${data.pinecone.hits.map(function(hit) { return hit.content.split('\\n')[0]; }).slice(0,3).join(', ')}...</p>
+                                <p><strong>5.</strong> Analysis: \${(function() {
                                     const queryLower = query.toLowerCase();
-                                    const exactMatches = data.pinecone.hits.filter(hit => 
-                                        hit.content.toLowerCase().includes(queryLower)
-                                    ).length;
+                                    const exactMatches = data.pinecone.hits.filter(function(hit) {
+                                        return hit.content.toLowerCase().includes(queryLower);
+                                    }).length;
                                     if (exactMatches === 0) {
-                                        return \`⚠️ ZERO results contain "\${query}" - vector similarity failed!\`;
+                                        return '⚠️ ZERO results contain "' + query + '" - vector similarity failed!';
                                     } else {
-                                        return \`✅ \${exactMatches}/\${data.pinecone.hits.length} results contain "\${query}"\`;
+                                        return '✅ ' + exactMatches + '/' + data.pinecone.hits.length + ' results contain "' + query + '"';
                                     }
                                 })()}</p>
                             </div>
@@ -990,7 +990,7 @@ app.get('/', (req, res) => {
             let highlightedContent = content;
             
             terms.forEach(term => {
-                const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+                const regex = new RegExp('\\\\b(' + term + ')\\\\b', 'gi');
                 highlightedContent = highlightedContent.replace(regex, '<strong style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #d4770e; padding: 2px 4px; border-radius: 3px; font-weight: 700;">$1</strong>');
             });
             
@@ -1052,17 +1052,17 @@ app.get('/', (req, res) => {
                 const readCost = (monthlyQueries / 1000000) * comp.readPer1M;
                 competitorCost = Math.max(comp.minMonthly, storageCost + readCost);
                 costBreakdown = [
-                    `Storage: $${storageCost.toFixed(2)}/month (${dataSize}GB × $${comp.storagePerGB})`,
-                    `Queries: $${readCost.toFixed(2)}/month (${(monthlyQueries/1000000).toFixed(1)}M × $${comp.readPer1M})`,
-                    `Minimum: $${comp.minMonthly}/month`
+                    'Storage: $' + storageCost.toFixed(2) + '/month (' + dataSize + 'GB × $' + comp.storagePerGB + ')',
+                    'Queries: $' + readCost.toFixed(2) + '/month (' + (monthlyQueries/1000000).toFixed(1) + 'M × $' + comp.readPer1M + ')',
+                    'Minimum: $' + comp.minMonthly + '/month'
                 ];
             } else if (competitor === 'weaviate') {
                 const dimensionCost = (dataSize * 1000000 / 1000000) * comp.dimensionPer1M; // Assume 1M dims per GB
                 const storageCost = dataSize * comp.storagePerGB;
                 competitorCost = dimensionCost + storageCost;
                 costBreakdown = [
-                    `Dimensions: $${dimensionCost.toFixed(2)}/month`,
-                    `Storage: $${storageCost.toFixed(2)}/month`
+                    'Dimensions: $' + dimensionCost.toFixed(2) + '/month',
+                    'Storage: $' + storageCost.toFixed(2) + '/month'
                 ];
             } else if (competitor === 'chroma') {
                 const writeOnceCost = dataSize * comp.writePerGB;
@@ -1070,49 +1070,47 @@ app.get('/', (req, res) => {
                 const queryCost = (monthlyQueries / 1000000) * comp.queryPer1M;
                 competitorCost = storageCost + queryCost;
                 costBreakdown = [
-                    `Initial Write: $${writeOnceCost.toFixed(2)} (one-time)`,
-                    `Storage: $${storageCost.toFixed(2)}/month`,
-                    `Queries: $${queryCost.toFixed(2)}/month`
+                    'Initial Write: $' + writeOnceCost.toFixed(2) + ' (one-time)',
+                    'Storage: $' + storageCost.toFixed(2) + '/month',
+                    'Queries: $' + queryCost.toFixed(2) + '/month'
                 ];
             } else {
                 // Generic calculation for other services
                 const storageCost = dataSize * (comp.storagePerGB || 0.20);
                 const baseCost = comp.minMonthly || 100;
                 competitorCost = Math.max(baseCost, storageCost);
-                costBreakdown = [`Base Plan: $${baseCost}/month`, `Storage: $${storageCost.toFixed(2)}/month`];
+                costBreakdown = ['Base Plan: $' + baseCost + '/month', 'Storage: $' + storageCost.toFixed(2) + '/month'];
             }
             
             const annualSavings = competitorCost * 12;
             
-            document.getElementById('cost-comparison').innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                    <div class="cost-card">
-                        <h6>⚡ ContextLite</h6>
-                        <div style="font-size: 14px; line-height: 1.6;">
-                            • $0 licensing fees<br>
-                            • $0 monthly subscription<br>
-                            • $0 per query<br>
-                            • <strong style="font-size: 18px; color: #00d4aa;">$0/month total</strong>
-                        </div>
-                    </div>
-                    <div class="cost-card competitor">
-                        <h6>🔥 ${comp.name}</h6>
-                        <div style="font-size: 14px; line-height: 1.6;">
-                            ${costBreakdown.map(item => `• ${item}<br>`).join('')}
-                            • <strong style="font-size: 18px; color: #ff6b7a;">$${competitorCost.toFixed(2)}/month</strong>
-                        </div>
-                    </div>
-                </div>
-            `;
+            document.getElementById('cost-comparison').innerHTML = 
+                '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">' +
+                    '<div class="cost-card">' +
+                        '<h6>⚡ ContextLite</h6>' +
+                        '<div style="font-size: 14px; line-height: 1.6;">' +
+                            '• $0 licensing fees<br>' +
+                            '• $0 monthly subscription<br>' +
+                            '• $0 per query<br>' +
+                            '• <strong style="font-size: 18px; color: #00d4aa;">$0/month total</strong>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="cost-card competitor">' +
+                        '<h6>🔥 ' + comp.name + '</h6>' +
+                        '<div style="font-size: 14px; line-height: 1.6;">' +
+                            costBreakdown.map(function(item) { return '• ' + item + '<br>'; }).join('') +
+                            '• <strong style="font-size: 18px; color: #ff6b7a;">$' + competitorCost.toFixed(2) + '/month</strong>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
             
-            document.getElementById('savings-summary').innerHTML = `
-                <div style="font-size: 18px; font-family: 'Orbitron', monospace; margin-bottom: 8px;">
-                    💰 ANNUAL SAVINGS: $${annualSavings.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                </div>
-                <div style="font-size: 14px; opacity: 0.9; font-family: 'JetBrains Mono', monospace;">
-                    100% COST REDUCTION • IMMEDIATE ROI • ZERO VENDOR LOCK-IN
-                </div>
-            `;
+            document.getElementById('savings-summary').innerHTML = 
+                '<div style="font-size: 18px; font-family: \'Orbitron\', monospace; margin-bottom: 8px;">' +
+                    '💰 ANNUAL SAVINGS: $' + annualSavings.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                '</div>' +
+                '<div style="font-size: 14px; opacity: 0.9; font-family: \'JetBrains Mono\', monospace;">' +
+                    '100% COST REDUCTION • IMMEDIATE ROI • ZERO VENDOR LOCK-IN' +
+                '</div>';
         }
         
         // Search on Enter key
