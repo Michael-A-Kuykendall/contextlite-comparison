@@ -397,7 +397,7 @@ app.get('/', (req, res) => {
     `);
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001; // Fixed port for Caddy routing
 app.listen(PORT, () => {
     console.log(`🚀 ContextLite vs Pinecone Demo running at http://localhost:${PORT}`);
     console.log('📊 Real empirical comparison ready!');
