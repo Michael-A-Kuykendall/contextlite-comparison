@@ -33,6 +33,7 @@ COPY Caddyfile /app/Caddyfile
 
 # Copy frontend demo
 COPY comparison-demo.js /app/comparison-demo.js
+COPY test-simple.js /app/test-simple.js
 COPY package.json /app/package.json
 RUN npm install
 
