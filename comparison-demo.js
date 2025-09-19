@@ -183,7 +183,7 @@ app.get('/', (req, res) => {
     <title>ContextLite vs Pinecone - REAL Empirical Comparison</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* ContextLite Corporate Design System */
         :root {
@@ -214,6 +214,10 @@ app.get('/', (req, res) => {
             color: var(--foreground);
             line-height: 1.6;
         }
+        
+        /* Premium Typography */
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+        .tech-badge, .winner-badge { font-family: 'Space Grotesk', monospace; }
         
         .header { 
             text-align: center; 
@@ -310,23 +314,71 @@ app.get('/', (req, res) => {
             font-size: 14px; 
         }
         
-        .results { display: flex; gap: 24px; margin-top: 24px; }
-        .result-panel { 
-            flex: 1; 
-            background: var(--card); 
-            padding: 24px; 
-            border-radius: 12px; 
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
+        .results { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 32px; 
+            margin-top: 32px; 
         }
-        .contextlite { border-left: 4px solid var(--success); }
-        .pinecone { border-left: 4px solid hsl(271, 81%, 56%); }
+        .result-panel { 
+            position: relative;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,1)); 
+            padding: 28px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15), 0 8px 16px -4px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .result-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4aa, #00a8ff);
+            border-radius: 20px 20px 0 0;
+        }
+        .result-panel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 32px 64px -12px rgba(0,0,0,0.18), 0 16px 32px -4px rgba(0,0,0,0.12);
+        }
+        .contextlite::before { 
+            background: linear-gradient(90deg, #00d4aa, #52c41a); 
+        }
+        .pinecone::before { 
+            background: linear-gradient(90deg, #722ed1, #eb2f96); 
+        }
         .metrics { 
-            background: var(--muted); 
-            padding: 18px; 
-            margin-bottom: 18px; 
-            border-radius: 8px;
-            font-weight: 500;
+            background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(82,196,26,0.1)); 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid rgba(0,212,170,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .metrics::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        .pinecone .metrics {
+            background: linear-gradient(135deg, rgba(114,46,209,0.1), rgba(235,47,150,0.1));
+            border-color: rgba(114,46,209,0.2);
+        }
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         .winner { 
             background: hsl(142, 76%, 96%); 
@@ -435,6 +487,99 @@ app.get('/', (req, res) => {
             color: hsl(142, 76%, 20%);
             font-weight: 600;
         }
+        
+        /* Premium Panel Headers */
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .header-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: iconShimmer 3s infinite;
+        }
+        .contextlite-icon {
+            background: linear-gradient(135deg, #00d4aa 0%, #52c41a 100%);
+            box-shadow: 0 8px 16px rgba(0, 212, 170, 0.4);
+        }
+        .pinecone-icon {
+            background: linear-gradient(135deg, #722ed1 0%, #eb2f96 100%);
+            box-shadow: 0 8px 16px rgba(114, 46, 209, 0.4);
+        }
+        @keyframes iconShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .header-content h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--foreground);
+            letter-spacing: -0.5px;
+        }
+        .tech-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            margin-top: 2px;
+        }
+        .contextlite .tech-badge {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(82, 196, 26, 0.1));
+            color: #00d4aa;
+            border-color: rgba(0, 212, 170, 0.2);
+        }
+        .pinecone .tech-badge {
+            background: linear-gradient(135deg, rgba(114, 46, 209, 0.1), rgba(235, 47, 150, 0.1));
+            color: #722ed1;
+            border-color: rgba(114, 46, 209, 0.2);
+        }
+        .winner-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #d4770e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
     </style>
 </head>
 <body>
@@ -527,7 +672,14 @@ app.get('/', (req, res) => {
                 resultsDiv.innerHTML = \`
                     <div class="results">
                         <div class="\${contextlitePanel}">
-                            <h3>🏠 ContextLite (Local SMT+FTS)</h3>
+                            <div class="panel-header">
+                                <div class="header-icon contextlite-icon">⚡</div>
+                                <div class="header-content">
+                                    <h3>ContextLite</h3>
+                                    <span class="tech-badge">Local SMT+FTS</span>
+                                </div>
+                                \${data.winner === 'ContextLite' ? '<div class="winner-badge">🏆 Winner</div>' : ''}
+                            </div>
                             <div class="metrics">
                                 <strong>\${data.contextlite.ms}ms</strong> • \${data.contextlite.total} results
                                 \${data.contextlite.error ? \`<br><span style="color: #e74c3c;">Error: \${data.contextlite.error}</span>\` : ''}
@@ -543,7 +695,14 @@ app.get('/', (req, res) => {
                         </div>
                         
                         <div class="\${pineconePanel}">
-                            <h3>🏠 Pinecone Local (Vector DB)</h3>
+                            <div class="panel-header">
+                                <div class="header-icon pinecone-icon">🌲</div>
+                                <div class="header-content">
+                                    <h3>Pinecone</h3>
+                                    <span class="tech-badge">Vector Database</span>
+                                </div>
+                                \${data.winner === 'Pinecone' ? '<div class="winner-badge">🏆 Winner</div>' : ''}
+                            </div>
                             <div class="metrics">
                                 <strong>\${data.pinecone.ms}ms</strong> • \${data.pinecone.total} results
                                 \${data.pinecone.error ? \`<br><span style="color: #e74c3c;">Error: \${data.pinecone.error}</span>\` : ''}
