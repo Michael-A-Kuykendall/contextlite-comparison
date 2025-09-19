@@ -350,17 +350,33 @@ app.get('/', (req, res) => {
                                 <h5>ContextLite Process</h5>
                                 <p><strong>1.</strong> Received query: "\${query}"</p>
                                 <p><strong>2.</strong> SQLite FTS5 tokenized: [\${query.split(' ').map(term => \`"\${term}"\`).join(', ')}]</p>
-                                <p><strong>3.</strong> BM25 relevance scoring on 1000 documents</p>
-                                <p><strong>4.</strong> SMT optimization selected top results</p>
-                                <p><strong>5.</strong> Exact text matching found \${data.contextlite.total} results</p>
+                                <p><strong>3.</strong> BM25 relevance scoring on 5000 documents</p>
+                                <p><strong>4.</strong> Returned: \${data.contextlite.hits.map(hit => hit.content.split('\\n')[0]).slice(0,3).join(', ')}...</p>
+                                <p><strong>5.</strong> Analysis: \${(() => {
+                                    const queryLower = query.toLowerCase();
+                                    const exactMatches = data.contextlite.hits.filter(hit => 
+                                        hit.content.toLowerCase().includes(queryLower)
+                                    ).length;
+                                    return \`✅ \${exactMatches}/\${data.contextlite.hits.length} results contain "\${query}" - exact text matching!\`;
+                                })()}</p>
                             </div>
                             <div class="tech-detail pinecone">
                                 <h5>Pinecone Process</h5>
                                 <p><strong>1.</strong> Received query: "\${query}"</p>
-                                <p><strong>2.</strong> Sentence transformer: 384-dimension vector [0.123, -0.456, ...]</p>
+                                <p><strong>2.</strong> Multilingual-e5-large: 1024-dimension vector [0.123, -0.456, ...]</p>
                                 <p><strong>3.</strong> Cosine similarity search in vector space</p>
-                                <p><strong>4.</strong> Retrieved semantically similar documents</p>
-                                <p><strong>5.</strong> Vector matching found \${data.pinecone.total} results</p>
+                                <p><strong>4.</strong> Returned: \${data.pinecone.hits.map(hit => hit.content.split('\\n')[0]).slice(0,3).join(', ')}...</p>
+                                <p><strong>5.</strong> Analysis: \${(() => {
+                                    const queryLower = query.toLowerCase();
+                                    const exactMatches = data.pinecone.hits.filter(hit => 
+                                        hit.content.toLowerCase().includes(queryLower)
+                                    ).length;
+                                    if (exactMatches === 0) {
+                                        return \`⚠️ ZERO results contain "\${query}" - vector similarity failed!\`;
+                                    } else {
+                                        return \`✅ \${exactMatches}/\${data.pinecone.hits.length} results contain "\${query}"\`;
+                                    }
+                                })()}</p>
                             </div>
                         </div>
                     </div>
