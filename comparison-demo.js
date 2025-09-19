@@ -181,44 +181,260 @@ app.get('/', (req, res) => {
 <html>
 <head>
     <title>ContextLite vs Pinecone - REAL Empirical Comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f8f9fa; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: #2c3e50; margin-bottom: 10px; }
-        .header p { color: #7f8c8d; font-size: 16px; }
-        .search-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .search-box input { width: 300px; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 6px; }
-        .search-box button { padding: 12px 24px; font-size: 16px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; margin-left: 10px; }
-        .search-box button:hover { background: #2980b9; }
-        .experiment-details { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .details-header { cursor: pointer; display: flex; align-items: center; gap: 10px; color: #2c3e50; font-weight: 600; }
-        .details-content { margin-top: 15px; display: none; }
+        /* ContextLite Corporate Design System */
+        :root {
+            --primary: hsl(210, 80%, 35%);
+            --primary-hover: hsl(210, 80%, 30%);
+            --background: hsl(210, 40%, 98%);
+            --card: hsl(0, 0%, 100%);
+            --border: hsl(214, 32%, 91%);
+            --muted: hsl(210, 40%, 98%);
+            --muted-foreground: hsl(215, 16%, 47%);
+            --foreground: hsl(215, 25%, 27%);
+            --success: hsl(142, 76%, 36%);
+            --warning: hsl(43, 96%, 56%);
+            --error: hsl(0, 84%, 60%);
+            --gradient-hero: linear-gradient(135deg, hsl(210, 80%, 35%) 0%, hsl(210, 80%, 40%) 50%, hsl(210, 80%, 45%) 100%);
+            --shadow-sm: 0 1px 2px 0 hsl(15 23 42 / 0.05);
+            --shadow-md: 0 4px 6px -1px hsl(15 23 42 / 0.1), 0 2px 4px -1px hsl(15 23 42 / 0.06);
+            --shadow-lg: 0 10px 15px -3px hsl(15 23 42 / 0.1), 0 4px 6px -2px hsl(15 23 42 / 0.05);
+            --shadow-primary: 0 10px 30px -10px hsl(210 80% 35% / 0.3);
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px;
+            background: var(--gradient-hero);
+            padding: 40px 20px;
+            border-radius: 16px;
+            color: white;
+            box-shadow: var(--shadow-primary);
+        }
+        .header h1 { 
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header p { 
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .search-box { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-md); 
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        .search-box input { 
+            width: 300px; 
+            padding: 14px 16px; 
+            font-size: 16px; 
+            border: 2px solid var(--border); 
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px hsl(210 80% 35% / 0.1);
+        }
+        .search-box button { 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-left: 12px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .search-box button:hover { 
+            background: var(--primary-hover);
+        }
+        
+        .experiment-details { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-md); 
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        .details-header { 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            color: var(--foreground); 
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .details-content { margin-top: 20px; display: none; }
         .details-content.expanded { display: block; }
-        .data-source { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .data-source h4 { margin: 0 0 10px 0; color: #2c3e50; }
-        .data-source p { margin: 5px 0; color: #5a6c7d; font-size: 14px; }
-        .results { display: flex; gap: 20px; margin-top: 20px; }
-        .result-panel { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .contextlite { border-left: 4px solid #27ae60; }
-        .pinecone { border-left: 4px solid #8e44ad; }
-        .metrics { background: #ecf0f1; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
-        .winner { background: #d5f4e6; border-color: #27ae60; }
-        .results-container { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; }
-        .document { border-bottom: 1px solid #eee; padding: 12px; }
+        .data-source { 
+            background: var(--muted); 
+            padding: 18px; 
+            border-radius: 8px; 
+            margin-bottom: 16px; 
+        }
+        .data-source h4 { 
+            margin: 0 0 12px 0; 
+            color: var(--foreground);
+            font-weight: 600;
+        }
+        .data-source p { 
+            margin: 6px 0; 
+            color: var(--muted-foreground); 
+            font-size: 14px; 
+        }
+        
+        .results { display: flex; gap: 24px; margin-top: 24px; }
+        .result-panel { 
+            flex: 1; 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+        .contextlite { border-left: 4px solid var(--success); }
+        .pinecone { border-left: 4px solid hsl(271, 81%, 56%); }
+        .metrics { 
+            background: var(--muted); 
+            padding: 18px; 
+            margin-bottom: 18px; 
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .winner { 
+            background: hsl(142, 76%, 96%); 
+            border-color: var(--success);
+            border-width: 2px;
+        }
+        .results-container { 
+            max-height: 220px; 
+            overflow-y: auto; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+        }
+        .document { 
+            border-bottom: 1px solid var(--border); 
+            padding: 14px; 
+        }
         .document:last-child { border-bottom: none; }
-        .doc-content { font-weight: 500; margin-bottom: 5px; font-size: 13px; }
-        .doc-path { font-size: 11px; color: #7f8c8d; }
-        .error { color: #e74c3c; background: #fadbd8; padding: 10px; border-radius: 6px; }
-        .explanation-pane { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }
-        .explanation-pane h4 { color: #2c3e50; margin-bottom: 15px; text-align: center; }
-        .tech-details { display: flex; gap: 20px; margin-bottom: 20px; }
-        .tech-detail { flex: 1; background: #f8f9fa; padding: 15px; border-radius: 6px; }
-        .tech-detail h5 { margin: 0 0 10px 0; color: #27ae60; }
-        .tech-detail.pinecone h5 { color: #8e44ad; }
-        .summary { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; text-align: center; }
-        .loading { text-align: center; padding: 40px; color: #7f8c8d; }
-        .chevron { transition: transform 0.2s; }
+        .doc-content { 
+            font-weight: 500; 
+            margin-bottom: 6px; 
+            font-size: 14px;
+            color: var(--foreground);
+        }
+        .doc-path { 
+            font-size: 12px; 
+            color: var(--muted-foreground); 
+        }
+        .error { 
+            color: white; 
+            background: var(--error); 
+            padding: 12px; 
+            border-radius: 8px; 
+        }
+        .explanation-pane { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-md); 
+            margin-top: 24px;
+            border: 1px solid var(--border);
+        }
+        .explanation-pane h4 { 
+            color: var(--foreground); 
+            margin-bottom: 20px; 
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .tech-details { display: flex; gap: 24px; margin-bottom: 24px; }
+        .tech-detail { 
+            flex: 1; 
+            background: var(--muted); 
+            padding: 18px; 
+            border-radius: 8px; 
+        }
+        .tech-detail h5 { 
+            margin: 0 0 12px 0; 
+            color: var(--success);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .tech-detail.pinecone h5 { color: hsl(271, 81%, 56%); }
+        .summary { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-md); 
+            margin-top: 24px; 
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .loading { 
+            text-align: center; 
+            padding: 50px; 
+            color: var(--muted-foreground);
+            font-size: 1.1rem;
+        }
+        .chevron { 
+            transition: transform 0.2s;
+            color: var(--primary);
+        }
         .chevron.expanded { transform: rotate(90deg); }
+        
+        /* Cost Calculator Enhancements */
+        #cost-calculator {
+            background: linear-gradient(135deg, hsl(210, 40%, 99%), hsl(210, 40%, 97%));
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+        #cost-calculator h5 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        #competitor-select, #monthly-queries, #data-size {
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        #competitor-select:focus, #monthly-queries:focus, #data-size:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px hsl(210 80% 35% / 0.1);
+        }
+        #savings-summary {
+            background: hsl(142, 76%, 96%);
+            border: 1px solid hsl(142, 76%, 80%);
+            color: hsl(142, 76%, 20%);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -386,31 +602,152 @@ app.get('/', (req, res) => {
                         <p><strong>Speed Advantage:</strong> \${data.speedup} faster</p>
                         <p><strong>Empirical Results:</strong> ContextLite \${data.contextlite.ms}ms vs Pinecone \${data.pinecone.ms}ms</p>
                         
-                        <div style="margin-top: 20px; padding: 15px; background: #e8f5e8; border-radius: 6px;">
-                            <h5 style="margin: 0 0 10px 0; color: #27ae60;">💰 Cost Analysis</h5>
-                            <div style="display: flex; gap: 20px; font-size: 14px;">
-                                <div style="flex: 1;">
-                                    <strong>ContextLite:</strong><br>
-                                    • $0 licensing fees<br>
-                                    • Local hardware only<br>
-                                    • <span style="color: #27ae60;">$0/month ongoing</span>
+                        <div id="cost-calculator" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+                            <h5 style="margin: 0 0 15px 0; color: #2c3e50;">💰 Dynamic Cost Calculator - Program Manager Budget Analysis</h5>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label for="competitor-select" style="display: block; margin-bottom: 5px; font-weight: 600;">Compare ContextLite vs:</label>
+                                <select id="competitor-select" onchange="updateCostCalculation()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="pinecone">Pinecone Vector Database</option>
+                                    <option value="weaviate">Weaviate Cloud</option>
+                                    <option value="qdrant">Qdrant Cloud</option>
+                                    <option value="chroma">ChromaDB Cloud</option>
+                                    <option value="opensearch">AWS OpenSearch</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-size: 13px;">Monthly Queries:</label>
+                                    <input type="number" id="monthly-queries" value="100000" onchange="updateCostCalculation()" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
                                 </div>
-                                <div style="flex: 1;">
-                                    <strong>Pinecone Cloud:</strong><br>
-                                    • $70/month Starter plan<br>
-                                    • $0.096/query at scale<br>
-                                    • <span style="color: #e74c3c;">$840+/year</span>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-size: 13px;">Data Size (GB):</label>
+                                    <input type="number" id="data-size" value="10" onchange="updateCostCalculation()" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
                                 </div>
                             </div>
-                            <p style="margin: 15px 0 0 0; text-align: center; font-weight: bold; color: #27ae60;">
-                                Annual Savings: $840+ with ContextLite Database Freedom Platform
-                            </p>
+                            
+                            <div id="cost-comparison" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+                                <!-- Dynamic content populated by updateCostCalculation() -->
+                            </div>
+                            
+                            <div id="savings-summary" style="margin-top: 15px; text-align: center; padding: 10px; background: #d5f4e6; border-radius: 4px;">
+                                <!-- Dynamic savings calculation -->
+                            </div>
                         </div>
                     </div>
                 \`;
             } catch (error) {
                 resultsDiv.innerHTML = \`<div class="error">Network error: \${error.message}</div>\`;
             }
+        }
+        
+        // Dynamic Cost Calculator Function
+        function updateCostCalculation() {
+            const competitor = document.getElementById('competitor-select').value;
+            const monthlyQueries = parseInt(document.getElementById('monthly-queries').value) || 100000;
+            const dataSize = parseInt(document.getElementById('data-size').value) || 10;
+            
+            const competitorData = {
+                pinecone: {
+                    name: "Pinecone Vector Database",
+                    minMonthly: 50,
+                    storagePerGB: 0.33,
+                    readPer1M: 16,
+                    writePer1M: 4,
+                    description: "Standard Plan minimum $50/month"
+                },
+                weaviate: {
+                    name: "Weaviate Cloud",
+                    minMonthly: 0,
+                    dimensionPer1M: 0.05,
+                    storagePerGB: 0.25,
+                    description: "Serverless: $0.05 per million dimensions"
+                },
+                qdrant: {
+                    name: "Qdrant Cloud",
+                    minMonthly: 50,
+                    storagePerGB: 0.40,
+                    computeHourly: 0.10,
+                    description: "Pay-per-use pricing"
+                },
+                chroma: {
+                    name: "ChromaDB Cloud",
+                    writePerGB: 2.50,
+                    storagePerGB: 0.33,
+                    queryPer1M: 1.50,
+                    description: "Usage-based pricing"
+                },
+                opensearch: {
+                    name: "AWS OpenSearch",
+                    minMonthly: 150,
+                    storagePerGB: 0.10,
+                    instanceHourly: 0.20,
+                    description: "Managed service with instance costs"
+                }
+            };
+            
+            const comp = competitorData[competitor];
+            let competitorCost = 0;
+            let costBreakdown = [];
+            
+            // Calculate competitor costs
+            if (competitor === 'pinecone') {
+                const storageCost = dataSize * comp.storagePerGB;
+                const readCost = (monthlyQueries / 1000000) * comp.readPer1M;
+                competitorCost = Math.max(comp.minMonthly, storageCost + readCost);
+                costBreakdown = [
+                    \`Storage: $\${storageCost.toFixed(2)}/month (\${dataSize}GB × $\${comp.storagePerGB})\`,
+                    \`Queries: $\${readCost.toFixed(2)}/month (\${(monthlyQueries/1000000).toFixed(1)}M × $\${comp.readPer1M})\`,
+                    \`Minimum: $\${comp.minMonthly}/month\`
+                ];
+            } else if (competitor === 'weaviate') {
+                const dimensionCost = (dataSize * 1000000 / 1000000) * comp.dimensionPer1M; // Assume 1M dims per GB
+                const storageCost = dataSize * comp.storagePerGB;
+                competitorCost = dimensionCost + storageCost;
+                costBreakdown = [
+                    \`Dimensions: $\${dimensionCost.toFixed(2)}/month\`,
+                    \`Storage: $\${storageCost.toFixed(2)}/month\`
+                ];
+            } else if (competitor === 'chroma') {
+                const writeOnceCost = dataSize * comp.writePerGB;
+                const storageCost = dataSize * comp.storagePerGB;
+                const queryCost = (monthlyQueries / 1000000) * comp.queryPer1M;
+                competitorCost = storageCost + queryCost;
+                costBreakdown = [
+                    \`Initial Write: $\${writeOnceCost.toFixed(2)} (one-time)\`,
+                    \`Storage: $\${storageCost.toFixed(2)}/month\`,
+                    \`Queries: $\${queryCost.toFixed(2)}/month\`
+                ];
+            } else {
+                // Generic calculation for other services
+                const storageCost = dataSize * (comp.storagePerGB || 0.20);
+                const baseCost = comp.minMonthly || 100;
+                competitorCost = Math.max(baseCost, storageCost);
+                costBreakdown = [\`Base Plan: $\${baseCost}/month\`, \`Storage: $\${storageCost.toFixed(2)}/month\`];
+            }
+            
+            const annualSavings = competitorCost * 12;
+            
+            document.getElementById('cost-comparison').innerHTML = \`
+                <div style="padding: 15px; background: #e8f5e8; border-radius: 4px;">
+                    <strong style="color: #27ae60;">ContextLite (Local)</strong><br>
+                    • $0 licensing fees<br>
+                    • $0 monthly subscription<br>
+                    • $0 per query<br>
+                    • <strong style="color: #27ae60;">$0/month total</strong>
+                </div>
+                <div style="padding: 15px; background: #fadbd8; border-radius: 4px;">
+                    <strong style="color: #e74c3c;">\${comp.name}</strong><br>
+                    \${costBreakdown.map(item => \`• \${item}<br>\`).join('')}
+                    • <strong style="color: #e74c3c;">$\${competitorCost.toFixed(2)}/month total</strong>
+                </div>
+            \`;
+            
+            document.getElementById('savings-summary').innerHTML = \`
+                <strong>💰 Annual Budget Impact: Save $\${annualSavings.toFixed(0)} per year with ContextLite</strong><br>
+                <span style="font-size: 13px; color: #5a6c7d;">ROI for Program Managers: 100% cost reduction on vector database infrastructure</span>
+            \`;
         }
         
         // Search on Enter key
@@ -420,6 +757,13 @@ app.get('/', (req, res) => {
         
         // Auto-search on load
         search();
+        
+        // Initialize cost calculator
+        setTimeout(() => {
+            if (document.getElementById('competitor-select')) {
+                updateCostCalculation();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
