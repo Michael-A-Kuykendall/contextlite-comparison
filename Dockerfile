@@ -17,6 +17,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends dumb-init \
 ENV NODE_ENV=production
 EXPOSE 3000
 
-# Use dumb-init and run Node directly on $PORT
+# Use dumb-init and run the real comparison demo
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["node", "test-simple.js"]
+CMD ["node", "comparison-demo.js"]

@@ -5,6 +5,11 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fetch = require('node-fetch');
 
+console.log('=== 🚀 ContextLite vs Pinecone Demo starting at', new Date().toISOString(), '===');
+console.log('PWD:', process.cwd());
+console.log('PORT:', process.env.PORT || 'unset');
+console.log('NODE_ENV:', process.env.NODE_ENV || 'unset');
+
 const app = express();
 app.use(express.json());
 app.use(express.static('.'));
@@ -162,6 +167,15 @@ app.post('/api/search', async (req, res) => {
     }
 });
 
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        service: 'contextlite-vs-pinecone-demo',
+        datasets: 'ContextLite: 10K docs, Pinecone: 6.15K+ docs'
+    });
+});
+
 app.get('/', (req, res) => {
     res.send(`
 <!DOCTYPE html>
@@ -288,7 +302,7 @@ app.get('/', (req, res) => {
                 const data = await response.json();
                 
                 if (!data.ok) {
-                    resultsDiv.innerHTML = \`<div class="error">Error: \${data.error}</div>\`;
+                    resultsDiv.innerHTML = \`<div class="error">Error: \$\{data.error\}</div>\`;
                     return;
                 }
                 
@@ -397,8 +411,10 @@ app.get('/', (req, res) => {
     `);
 });
 
-const PORT = 3001; // Fixed port for Caddy routing
-app.listen(PORT, () => {
-    console.log(`🚀 ContextLite vs Pinecone Demo running at http://localhost:${PORT}`);
-    console.log('📊 Real empirical comparison ready!');
+const HOST = process.env.HOST || '0.0.0.0';
+const PORT = Number(process.env.PORT || 3000);
+
+app.listen(PORT, HOST, () => {
+    console.log(`=== ✅ ContextLite vs Pinecone Demo running on ${HOST}:${PORT} ===`);
+    console.log('📊 Real empirical comparison with 10K Wikipedia abstracts ready!');
 });
