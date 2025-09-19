@@ -99,7 +99,7 @@ sleep 2
 
 # Start Frontend Demo in background
 echo "🎨 Starting Frontend Demo..."
-cd /app && node comparison-demo.js &
+cd /app && node test-simple.js &
 FRONTEND_PID=$!
 
 # Wait for Frontend to be ready
