@@ -335,8 +335,8 @@ app.get('/', (req, res) => {
                             <div class="results-container">
                                 \${data.pinecone.hits.map(hit => \`
                                     <div class="document">
-                                        <div class="doc-content">\${hit.metadata?.content ? hit.metadata.content.substring(0, 120) + '...' : hit.metadata?.title || 'No content'}</div>
-                                        <div class="doc-path">\${hit.metadata?.source_path || 'N/A'} • Score: \${hit.score ? hit.score.toFixed(3) : 'N/A'}</div>
+                                        <div class="doc-content">\${hit.content ? hit.content.substring(0, 120) + '...' : 'No content'}</div>
+                                        <div class="doc-path">\${hit.path || 'N/A'} • Score: \${hit.score ? hit.score.toFixed(3) : 'N/A'}</div>
                                     </div>
                                 \`).join('')}
                             </div>
