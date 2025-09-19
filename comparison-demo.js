@@ -58,20 +58,61 @@ async function queryPinecone(query) {
     const startTime = Date.now();
     
     try {
-        // Use standalone Pinecone service
-        const response = await fetch('http://localhost:3002/query', {
+        // Step 1: Generate embedding using Pinecone's built-in model
+        const embedResponse = await fetch('https://api.pinecone.io/v1/embed', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query })
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': process.env.PINECONE_API_KEY || 'pcsk_6emnSp_Cj8GXBMBXTbM3qudCLezVrWPmqWjb2Agd79FAgWocGZsq63vPvMXYomfr3tDEf5'
+            },
+            body: JSON.stringify({
+                model: 'multilingual-e5-large',
+                inputs: [query],
+                parameters: { input_type: 'query' }
+            })
         });
         
-        const data = await response.json();
+        if (!embedResponse.ok) {
+            throw new Error(`Embedding failed: ${embedResponse.status}`);
+        }
+        
+        const embedData = await embedResponse.json();
+        const queryVector = embedData.data[0].values;
+        
+        // Step 2: Query Pinecone index with the embedding
+        const queryResponse = await fetch('https://contextlite-demo-ex6pti6.svc.aped-4627-b74a.pinecone.io/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Api-Key': process.env.PINECONE_API_KEY || 'pcsk_6emnSp_Cj8GXBMBXTbM3qudCLezVrWPmqWjb2Agd79FAgWocGZsq63vPvMXYomfr3tDEf5'
+            },
+            body: JSON.stringify({
+                vector: queryVector,
+                topK: 10,
+                includeMetadata: true,
+                namespace: 'default'
+            })
+        });
+        
+        if (!queryResponse.ok) {
+            throw new Error(`Query failed: ${queryResponse.status}`);
+        }
+        
+        const queryData = await queryResponse.json();
+        
+        // Format results to match expected structure
+        const hits = (queryData.matches || []).map(match => ({
+            id: match.id,
+            content: match.metadata?.content || 'No content',
+            path: match.metadata?.source_path || match.id,
+            score: match.score || 0
+        }));
         
         return {
             ms: Date.now() - startTime,
-            hits: data.matches || [],
-            total: data.total || 0,
-            raw: data
+            hits: hits,
+            total: hits.length,
+            raw: queryData
         };
     } catch (error) {
         return {
