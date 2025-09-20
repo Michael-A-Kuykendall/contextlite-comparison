@@ -362,7 +362,7 @@ app.get('/', (req, res) => {
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(135deg, #00d4aa, #52c41a);
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
             border-radius: 22px;
             z-index: -1;
         }
@@ -371,10 +371,10 @@ app.get('/', (req, res) => {
             box-shadow: 0 32px 64px -12px rgba(0,0,0,0.18), 0 16px 32px -4px rgba(0,0,0,0.12);
         }
         .contextlite::before { 
-            background: linear-gradient(135deg, #00d4aa, #52c41a); 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
         }
         .pinecone::before { 
-            background: linear-gradient(135deg, #722ed1, #eb2f96); 
+            background: linear-gradient(135deg, #6366f1, #4f46e5); 
         }
         .metrics { 
             background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(82,196,26,0.1)); 
@@ -398,8 +398,8 @@ app.get('/', (req, res) => {
             animation: shimmer 2s infinite;
         }
         .pinecone .metrics {
-            background: linear-gradient(135deg, rgba(114,46,209,0.1), rgba(235,47,150,0.1));
-            border-color: rgba(114,46,209,0.2);
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(79,70,229,0.1));
+            border-color: rgba(99,102,241,0.2);
         }
         @keyframes shimmer {
             0% { left: -100%; }
@@ -702,12 +702,12 @@ app.get('/', (req, res) => {
             animation: iconShimmer 3s infinite;
         }
         .contextlite-icon {
-            background: linear-gradient(135deg, #00d4aa 0%, #52c41a 100%);
-            box-shadow: 0 8px 16px rgba(0, 212, 170, 0.4);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
         }
         .pinecone-icon {
-            background: linear-gradient(135deg, #722ed1 0%, #eb2f96 100%);
-            box-shadow: 0 8px 16px rgba(114, 46, 209, 0.4);
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
         }
         @keyframes iconShimmer {
             0% { left: -100%; }
@@ -734,14 +734,14 @@ app.get('/', (req, res) => {
             margin-top: 2px;
         }
         .contextlite .tech-badge {
-            background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(82, 196, 26, 0.1));
-            color: #00d4aa;
-            border-color: rgba(0, 212, 170, 0.2);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.2);
         }
         .pinecone .tech-badge {
-            background: linear-gradient(135deg, rgba(114, 46, 209, 0.1), rgba(235, 47, 150, 0.1));
-            color: #722ed1;
-            border-color: rgba(114, 46, 209, 0.2);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+            color: #6366f1;
+            border-color: rgba(99, 102, 241, 0.2);
         }
         .winner-badge {
             position: absolute;
