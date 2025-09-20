@@ -352,38 +352,34 @@ app.get('/', (req, res) => {
             overflow: hidden;
         }
         .result-panel {
-            border: 2px solid transparent;
-            background-clip: padding-box;
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #1f2937;
         }
         .result-panel::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
-            border-radius: 22px;
-            z-index: -1;
+            display: none;
         }
         .result-panel:hover {
             transform: translateY(-4px);
             box-shadow: 0 32px 64px -12px rgba(0,0,0,0.18), 0 16px 32px -4px rgba(0,0,0,0.12);
         }
-        .contextlite::before { 
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+        .contextlite {
+            border-color: #3b82f6;
+            background: white;
         }
-        .pinecone::before { 
-            background: linear-gradient(135deg, #6366f1, #4f46e5); 
+        .pinecone {
+            border-color: #6366f1;
+            background: white;
         }
         .metrics { 
-            background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(82,196,26,0.1)); 
+            background: #f8fafc;
             padding: 20px; 
             margin-bottom: 20px; 
             border-radius: 16px;
             font-weight: 600;
             font-size: 16px;
-            border: 1px solid rgba(0,212,170,0.2);
+            border: 1px solid #e2e8f0;
+            color: #1f2937;
             position: relative;
             overflow: hidden;
         }
@@ -397,9 +393,11 @@ app.get('/', (req, res) => {
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
             animation: shimmer 2s infinite;
         }
+        .contextlite .metrics {
+            border-color: #3b82f6;
+        }
         .pinecone .metrics {
-            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(79,70,229,0.1));
-            border-color: rgba(99,102,241,0.2);
+            border-color: #6366f1;
         }
         @keyframes shimmer {
             0% { left: -100%; }
