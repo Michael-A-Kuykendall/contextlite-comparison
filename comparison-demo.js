@@ -175,6 +175,10 @@ app.get('/health', (req, res) => {
     });
 });
 
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
+
 app.get('/', (req, res) => {
     res.send(`
 <!DOCTYPE html>
@@ -1105,12 +1109,12 @@ app.get('/', (req, res) => {
                 '</div>';
             
             document.getElementById('savings-summary').innerHTML = 
-                '<div style="font-size: 18px; font-family: \'Orbitron\', monospace; margin-bottom: 8px;">' +
-                    '💰 ANNUAL SAVINGS: $' + annualSavings.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-                '</div>' +
-                '<div style="font-size: 14px; opacity: 0.9; font-family: \'JetBrains Mono\', monospace;">' +
-                    '100% COST REDUCTION • IMMEDIATE ROI • ZERO VENDOR LOCK-IN' +
-                '</div>';
+                "<div style=\"font-size: 18px; font-family: 'Orbitron', monospace; margin-bottom: 8px;\">" +
+                    "💰 ANNUAL SAVINGS: $" + annualSavings.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                "</div>" +
+                "<div style=\"font-size: 14px; opacity: 0.9; font-family: 'JetBrains Mono', monospace;\">" +
+                    "100% COST REDUCTION • IMMEDIATE ROI • ZERO VENDOR LOCK-IN" +
+                "</div>";
         }
         
         // Search on Enter key
