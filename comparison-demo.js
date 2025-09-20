@@ -485,39 +485,26 @@ app.get('/', (req, res) => {
         }
         .chevron.expanded { transform: rotate(90deg); }
         
-        /* Premium Cost Calculator - The Power Punch */
+        /* Clean Cost Calculator */
         #cost-calculator {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            color: white;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            color: #1f2937;
         }
         #cost-calculator::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: calculatorShine 4s infinite;
-        }
-        @keyframes calculatorShine {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            display: none;
         }
         #cost-calculator h5 {
-            color: white;
+            color: #1f2937;
             font-size: 1.4rem;
-            font-family: 'Orbitron', monospace;
+            font-family: 'Poppins', sans-serif;
             font-weight: 700;
             text-align: center;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             margin-bottom: 24px;
-            position: relative;
-            z-index: 2;
         }
         .calculator-header {
             text-align: center;
@@ -546,60 +533,55 @@ app.get('/', (req, res) => {
             flex-direction: column;
         }
         .input-group label {
-            color: rgba(255,255,255,0.9);
+            color: #4b5563;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
-            font-family: 'Space Grotesk', monospace;
+            font-family: 'Inter', sans-serif;
         }
         #competitor-select, #monthly-queries, #data-size {
             font-family: 'Inter', sans-serif;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #1f2937;
             border-radius: 8px;
             padding: 12px;
             font-size: 14px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
         #competitor-select:focus, #monthly-queries:focus, #data-size:focus {
             outline: none;
-            border-color: rgba(255,255,255,0.6);
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.2);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         #competitor-select option {
-            background: #333;
-            color: white;
+            background: white;
+            color: #1f2937;
         }
         #cost-comparison {
             position: relative;
             z-index: 2;
         }
         #savings-summary {
-            background: linear-gradient(135deg, #00d4aa, #52c41a);
+            background: #10b981;
             border: none;
+            border-radius: 8px;
             color: white;
             font-weight: 700;
             font-size: 16px;
-            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+            padding: 16px;
+            margin-top: 16px;
             text-align: center;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .cost-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: white;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             padding: 20px;
-            color: white;
-            position: relative;
-            overflow: hidden;
+            color: #1f2937;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         .cost-card::before {
             content: '';
@@ -608,16 +590,17 @@ app.get('/', (req, res) => {
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #00d4aa, #52c41a);
+            background: #3b82f6;
         }
         .cost-card.competitor::before {
-            background: linear-gradient(90deg, #ff4757, #ff6b7a);
+            background: #ef4444;
         }
         .cost-card h6 {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Poppins', sans-serif;
             font-size: 18px;
             margin: 0 0 12px 0;
             font-weight: 600;
+            color: #1f2937;
         }
         
         /* Mobile Responsive Design */
